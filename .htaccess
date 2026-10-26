@@ -1,0 +1,15 @@
+# TEAMS - Tambari Estate Agents Management System
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# Never serve dotfiles, logs, SQL or markdown from the web root
+<FilesMatch "(^\.|\.(sql|log|md|dat|bak|env|ini)$)">
+    Require all denied
+</FilesMatch>
+<Files "index.php">
+    Require all granted
+</Files>

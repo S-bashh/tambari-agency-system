@@ -1,0 +1,7 @@
+<div class="page-head"><div><div class="d-flex gap-2 align-items-center mb-1"><span class="badge badge-soft bg-<?= $a['status'] === 'current' ? 'success' : 'secondary' ?>"><?= e(ucfirst($a['status'])) ?></span></div>
+  <h1>Agreement <?= e($a['ref']) ?></h1><div class="sub"><a href="<?= e(url('tenancies/view', ['id' => $t['id']])) ?>"><?= e($t['ref']) ?></a> · <?= e($t['tenant_name']) ?> · generated <?= e(fmt_datetime($a['generated_at'])) ?> from "<?= e($a['template_name']) ?>"</div></div>
+  <div class="d-flex flex-wrap gap-2 no-print">
+    <a class="btn btn-primary" target="_blank" rel="noopener" href="<?= e(url('agreements/raw', ['id' => $a['id'], 'print' => 1])) ?>"><i class="bi bi-printer me-1"></i><?= $a['print_count'] > 0 ? 'Reprint' : 'Print' ?></a>
+    <a class="btn btn-light border" href="<?= e(url('agreements/pdf', ['id' => $a['id']])) ?>"><i class="bi bi-file-earmark-pdf me-1"></i>Download PDF</a>
+    <button class="btn btn-light border" type="button" data-share-pdf="<?= e(url('agreements/pdf', ['id' => $a['id']])) ?>" data-share-name="Agreement-<?= e($a['ref']) ?>.pdf" data-share-title="Tenancy agreement <?= e($a['ref']) ?>"><i class="bi bi-share me-1"></i>Share</button></div></div>
+<div class="card"><div class="card-body p-2"><iframe src="<?= e(url('agreements/raw', ['id' => $a['id']])) ?>" title="Agreement preview" style="width:100%;height:78vh;border:0;background:#fff"></iframe></div></div>

@@ -1,0 +1,11 @@
+<div class="page-head"><div><h1>Generate tenancy agreement</h1><div class="sub"><?= e($t['ref']) ?> · <?= e($t['tenant_name']) ?> · <?= e($t['property_title']) ?></div></div><a class="btn btn-light border" href="<?= e(url('tenancies/view', ['id' => $t['id']])) ?>">Cancel</a></div>
+<?php if ($missing): ?><div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-1"></i>No <?= e(implode(' or ', $missing)) ?> is on file, so a blank line will print for it. You can add it on the person's profile first, or write it in by hand after printing.</div><?php endif; ?>
+<div class="row g-3"><div class="col-lg-7"><div class="card"><div class="card-body">
+  <form method="post" action="<?= e(url('agreements/create')) ?>" class="row g-3 needs-validation" novalidate><?= csrf_field() ?><input type="hidden" name="tenancy_id" value="<?= (int)$t['id'] ?>">
+    <div class="col-12"><label class="form-label">Template</label><select class="form-select" name="template_id"><?php foreach ($templates as $tp): ?><option value="<?= (int)$tp['id'] ?>"<?= selected(fv('template_id'), $tp['id']) ?>><?= e($tp['name']) ?><?= $tp['is_default'] ? ' (default)' : '' ?></option><?php endforeach; ?></select></div>
+    <?php f_input('use_purpose', 'Permitted use of the premises', ['required' => true, 'maxlength' => 120, 'col' => 'col-12', 'help' => 'Printed as: "To use the Demised Premises for ___ purposes only."']); ?>
+    <?php f_textarea('extra_terms', 'Additional terms (optional)', ['rows' => 4, 'maxlength' => 4000]); ?>
+    <div class="col-12"><button class="btn btn-primary"><i class="bi bi-file-earmark-text me-1"></i>Generate agreement</button></div></form></div></div></div>
+<div class="col-lg-5"><div class="card"><div class="card-body small text-muted"><div class="fw-semibold text-dark mb-2">What happens</div><ul class="ps-3 mb-0">
+  <li>The agreement is filled from the tenancy, tenant, landlord, guarantor and property records.</li><li>A snapshot is stored against the tenancy, so reprints are always identical.</li>
+  <li>Generating again marks the earlier one as superseded and keeps it on file.</li><li>Upload the signed copy from the tenancy's Documents panel.</li></ul></div></div></div></div>

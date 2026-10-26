@@ -1,0 +1,27 @@
+<?php $days = $last ? (int)floor((time() - strtotime($last)) / 86400) : null; ?>
+<div class="page-head"><div><h1>Backups</h1><div class="sub">Copies of your data that you can restore if the computer fails or a mistake is made.</div></div></div>
+<?php if ($last === null): ?><div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-1"></i>No backup has been made yet. Create one now and keep a copy on another device.</div>
+<?php elseif ($days >= (int)setting('backup_reminder_days', '7')): ?><div class="alert alert-warning"><i class="bi bi-clock-history me-1"></i>The last backup was <?= $days ?> day<?= $days == 1 ? '' : 's' ?> ago.</div>
+<?php else: ?><div class="alert alert-success py-2"><i class="bi bi-check-circle me-1"></i>Last backup: <?= e(fmt_datetime($last)) ?>.</div><?php endif; ?>
+<div class="row g-3 mb-3">
+  <div class="col-md-6"><div class="card h-100"><div class="card-body"><div class="fw-semibold mb-1"><i class="bi bi-database me-1"></i>Database backup</div><p class="small text-muted">All records: people, properties, tenancies, payments, receipts, sales, settings and the audit log. Small and quick. Does not include uploaded files.</p>
+    <form method="post" action="<?= e(url('backups/create')) ?>"><?= csrf_field() ?><input type="hidden" name="kind" value="database"><input class="form-control mb-2" name="note" maxlength="255" placeholder="Note (optional)"><button class="btn btn-primary"><i class="bi bi-cloud-arrow-down me-1"></i>Create database backup</button></form></div></div></div>
+  <div class="col-md-6"><div class="card h-100"><div class="card-body"><div class="fw-semibold mb-1"><i class="bi bi-file-earmark-zip me-1"></i>Full backup</div><p class="small text-muted">The database plus every uploaded document and property photo, in one ZIP. Larger, but restores everything.</p>
+    <?php if ($zip): ?><form method="post" action="<?= e(url('backups/create')) ?>"><?= csrf_field() ?><input type="hidden" name="kind" value="full"><input class="form-control mb-2" name="note" maxlength="255" placeholder="Note (optional)"><button class="btn btn-primary"><i class="bi bi-file-earmark-zip me-1"></i>Create full backup</button></form>
+    <?php else: ?><div class="alert alert-warning py-2 small mb-0">The PHP zip extension is not enabled. In XAMPP open <code>php.ini</code>, remove the semicolon before <code>extension=zip</code>, and restart Apache.</div><?php endif; ?></div></div></div>
+</div>
+<div class="card mb-3"><div class="card-header">Backup history</div>
+<?php if (!$rows): ?><div class="empty"><i class="bi bi-cloud"></i>No backups yet.</div><?php else: ?>
+<div class="table-responsive"><table class="table table-hover table-stack align-middle mb-0"><thead><tr><th>Created</th><th>File</th><th>Type</th><th>Size</th><th>Contents</th><th></th></tr></thead><tbody>
+<?php foreach ($rows as $r): ?><tr><td class="cell-main"><?= e(fmt_datetime($r['created_at'])) ?><div class="small text-muted"><?= e($r['creator'] ?? '') ?></div></td>
+  <td data-label="File" class="small"><?= e($r['filename']) ?><?= $r['note'] ? '<div class="text-muted">' . e($r['note']) . '</div>' : '' ?></td><td data-label="Type"><?= $r['kind'] === 'full' ? 'Full' : 'Database' ?></td><td data-label="Size"><?= e(fmt_bytes((int)$r['file_size'])) ?></td>
+  <td data-label="Contents" class="small"><?= (int)$r['table_count'] ?> tables, <?= (int)$r['row_count'] ?> rows</td>
+  <td class="cell-actions text-end text-nowrap"><?php if ($r['exists']): ?><a class="btn btn-sm btn-light" href="<?= e(url('backups/download', ['id' => $r['id']])) ?>"><i class="bi bi-download me-1"></i>Download</a>
+    <form method="post" action="<?= e(url('backups/delete')) ?>" class="d-inline" data-confirm="Delete this backup file from the server? Make sure you have downloaded a copy." data-confirm-title="Delete backup" data-confirm-button="Delete"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$r['id'] ?>"><button class="btn btn-sm btn-light text-danger"><i class="bi bi-trash"></i></button></form>
+    <?php else: ?><span class="badge badge-soft bg-secondary">File missing</span><?php endif; ?></td></tr><?php endforeach; ?></tbody></table></div><?php endif; ?></div>
+<div class="card"><div class="card-header">How to restore a backup</div><div class="card-body small">
+  <ol class="mb-2"><li>Start Apache and MySQL in the XAMPP Control Panel.</li><li>Open <code>http://localhost/phpmyadmin</code>.</li>
+    <li>To restore into the same database, click <strong><?= e($dbName) ?></strong>, then the <strong>Import</strong> tab. Choose the <code>.sql</code> backup file and click Import. The import replaces the existing tables with the saved ones.</li>
+    <li>For a <strong>full backup</strong> ZIP: extract it, import <code>database.sql</code> as above, then copy the <code>storage/documents</code> and <code>storage/images</code> folders from the ZIP into <code>C:\xampp\htdocs\teams\storage\</code>.</li>
+    <li>If the import stops with "file too large", raise <code>upload_max_filesize</code> and <code>post_max_size</code> in <code>C:\xampp\php\php.ini</code>, restart Apache and try again.</li></ol>
+  <div class="alert alert-info py-2 mb-0"><i class="bi bi-info-circle me-1"></i>Backups are stored on this computer. A backup on the same disk is lost if the disk fails, so download copies to a flash drive, another computer or a cloud folder. This system makes no automatic cloud copy.</div></div></div>

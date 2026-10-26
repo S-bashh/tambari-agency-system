@@ -1,0 +1,10 @@
+<div class="page-head"><div><h1>Users</h1><div class="sub">Staff who can sign in. Disabled users keep their history.</div></div><a class="btn btn-primary" href="<?= e(url('users/create')) ?>"><i class="bi bi-person-plus me-1"></i>Add user</a></div>
+<div class="card"><div class="table-responsive"><table class="table table-hover table-stack align-middle"><thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Last sign-in</th><th></th></tr></thead><tbody>
+<?php foreach ($rows as $u): $locked = $u['locked_until'] && strtotime($u['locked_until']) > time(); ?>
+  <tr><td class="cell-main"><div class="d-flex align-items-center gap-2"><span class="avatar"><?= e(initials($u['full_name'])) ?></span><span><span class="fw-semibold"><?= e($u['full_name']) ?></span><span class="d-block small text-muted"><?= e($u['username']) ?> · <?= e($u['email']) ?></span></span></div></td>
+    <td data-label="Role"><span class="badge badge-soft bg-primary"><?= e($u['role_name']) ?></span></td>
+    <td data-label="Status"><?= $u['is_active'] ? '<span class="badge badge-soft bg-success">Active</span>' : '<span class="badge badge-soft bg-secondary">Disabled</span>' ?><?= $locked ? ' <span class="badge badge-soft bg-warning">Locked</span>' : '' ?><?= $u['must_change_password'] ? ' <span class="badge badge-soft bg-info">Must change password</span>' : '' ?></td>
+    <td data-label="Last sign-in"><?= $u['last_login_at'] ? e(fmt_datetime($u['last_login_at'])) . '<div class="small text-muted">' . e($u['last_login_ip']) . '</div>' : 'Never' ?></td>
+    <td class="cell-actions text-end text-nowrap"><?php if ($locked): ?><form method="post" action="<?= e(url('users/unlock')) ?>" class="d-inline"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$u['id'] ?>"><button class="btn btn-sm btn-light" title="Unlock"><i class="bi bi-unlock"></i></button></form><?php endif; ?>
+      <a class="btn btn-sm btn-light" href="<?= e(url('users/edit', ['id' => $u['id']])) ?>"><i class="bi bi-pencil me-1"></i>Edit</a></td></tr>
+<?php endforeach; ?></tbody></table></div></div>
