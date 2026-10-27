@@ -30,7 +30,7 @@ Version 1.0. Built with PHP, MySQL/MariaDB and Bootstrap.
 ### Tenancy Management
 ![Tenancy Management](screenshots/03-tenancies.png)
 
-### Payments &N Reciepts
+### Payments &N Receipts
 ![Rent Payments](screenshots/04-payments.png)
 
 ### Reports
