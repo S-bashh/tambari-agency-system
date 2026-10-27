@@ -2,7 +2,7 @@
 
 Version 1.0. Built with PHP, MySQL/MariaDB and Bootstrap.
 
-## What it does
+## What the system does
 
 - **People:** one customer database. A person is entered once and can be a tenant, landlord, buyer, seller and guarantor at the same time. The system warns you before creating a duplicate. Tenant, landlord and guarantor details follow your paper forms.
 - **Properties:** prices and fees, features, photos, documents, and a controlled status workflow (Available, Reserved, Rented, Sold, and so on) with a history of every change.
@@ -18,9 +18,28 @@ Version 1.0. Built with PHP, MySQL/MariaDB and Bootstrap.
 - **Dashboard** with live figures, charts and a "Needs attention" list.
 - **Administration:** users, roles and permissions, audit log, settings, agreement templates, backups and demo data.
 
+  
+## Screenshots
+
+### Dashboard
+![Tambari Dashboard](screenshots/01-dashboard.png)
+
+### Property Management
+![Property Management](screenshots/02-properties.png)
+
+### Tenancy Management
+![Tenancy Management](screenshots/03-tenancies.png)
+
+### Payments &N Reciepts
+![Rent Payments](screenshots/04-payments.png)
+
+### Reports
+![Reports](screenshots/05-reports.png)
+
+
 ## What you need
 
-- Windows with XAMPP (PHP 8.2 or newer, Apache, MySQL/MariaDB). Download XAMPP from apachefriends.org
+- Windows with XAMPP (PHP 8.2 or newer, Apache, MySQL/MariaDB)
 - A modern browser (Chrome, Edge or Firefox)
 
 ## Installation
